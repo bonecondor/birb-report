@@ -60,12 +60,10 @@ a:hover { color: var(--ochre); }
 
 .wordmark {
   display: block;
-  font-family: var(--serif);
+  font-family: "Fraunces", var(--serif);
   font-weight: 600;
-  font-size: clamp(2.6rem, 11vw, 5rem);
+  font-size: clamp(2.8rem, 12vw, 5.2rem);
   line-height: 1;
-  letter-spacing: 0.12em;
-  font-variant: small-caps;
   text-transform: lowercase;
   color: var(--ink);
   text-decoration: none;

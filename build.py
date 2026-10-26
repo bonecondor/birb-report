@@ -245,7 +245,7 @@ def page(title: str, body: str, depth: int = 0, current: str = "") -> str:
 <title>{html.escape(title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap">
 <link rel="stylesheet" href="{prefix}style.css">
 <link rel="alternate" type="application/rss+xml" title="{html.escape(SITE_TITLE)}" href="https://{DOMAIN}/feed.xml">
 </head>
@@ -259,7 +259,7 @@ def page(title: str, body: str, depth: int = 0, current: str = "") -> str:
 {body}
 </main>
 <footer>
-<p><a href="{prefix}feed.xml">rss</a> · <a href="https://foid.report">foid</a> · <a href="https://fringe.report">fringe</a> · <a href="https://intervals.report">intervals</a></p>
+<p><a href="{prefix}feed.xml">rss</a> · <a href="https://foid.report">foid</a> · <a href="https://fringe.report">fringe</a> · <a href="https://intervals.report">intervals</a> · <a href="https://trysoup.xyz">soup</a></p>
 </footer>
 </body>
 </html>
