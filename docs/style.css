@@ -1,0 +1,191 @@
+/* birb.report — field guide: paper, moss, ochre, specimen labels */
+
+:root {
+  --paper: #f2ede0;
+  --card: #f8f4ea;
+  --ink: #25261f;
+  --dim: #6d6a5c;
+  --moss: #4b5a3a;
+  --ochre: #a8772a;
+  --rule: #cfc6ad;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #171a14;
+    --card: #1e221a;
+    --ink: #e7e2d2;
+    --dim: #9d998a;
+    --moss: #a3b48a;
+    --ochre: #d6a454;
+    --rule: #3a3f31;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--moss); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--ochre); }
+
+.label, .plate, .tagline, nav, footer, .subscribe-form, .pager {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+
+.label { color: var(--dim); margin: 0; }
+
+/* masthead */
+
+.masthead {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--rule);
+}
+
+.plate { margin: 0 0 0.75rem; color: var(--ochre); }
+
+.wordmark {
+  display: block;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 11vw, 5rem);
+  line-height: 1;
+  letter-spacing: 0.12em;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+.wordmark:hover { color: var(--moss); }
+
+.tagline { margin: 0.9rem 0 0; color: var(--dim); font-style: normal; }
+
+nav { margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.5rem; }
+nav a { color: var(--dim); text-decoration: none; }
+nav a:hover, nav a[aria-current="page"] { color: var(--ink); text-decoration: underline; }
+
+main {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+/* subscribe */
+
+.subscribe {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--ochre);
+  padding: 1.1rem 1.25rem;
+  margin: 0 0 3rem;
+}
+.subscribe p { margin: 0.2rem 0 0.8rem; font-size: 1rem; }
+.subscribe .label { color: var(--ochre); }
+.subscribe-soon { color: var(--dim); }
+
+.subscribe-form { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.subscribe-form input {
+  flex: 1 1 12rem;
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  text-transform: none;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+.subscribe-form button {
+  padding: 0.6rem 1.1rem;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--paper);
+  background: var(--moss);
+  border: 0;
+  cursor: pointer;
+}
+.subscribe-form button:hover { background: var(--ochre); }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* entries list */
+
+.entries { list-style: none; margin: 0; padding: 0; }
+
+.entry { padding: 1.4rem 0; border-top: 1px solid var(--rule); }
+.entry:last-child { border-bottom: 1px solid var(--rule); }
+.entry .label { display: flex; justify-content: space-between; }
+.entry h2 { margin: 0.35rem 0 0.2rem; font-size: 1.5rem; font-weight: 600; line-height: 1.25; }
+.entry h2 a { color: var(--ink); text-decoration: none; }
+.entry h2 a:hover { color: var(--moss); }
+.entry .dek { margin: 0 0 0.4rem; font-style: italic; color: var(--dim); }
+.entry .excerpt { margin: 0.4rem 0 0; font-size: 1rem; color: var(--dim); }
+
+/* post */
+
+.specimen {
+  border: 1px solid var(--rule);
+  background: var(--card);
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 2.25rem;
+}
+.specimen h1 { margin: 0.4rem 0 0.4rem; font-size: clamp(1.8rem, 6vw, 2.4rem); font-weight: 600; line-height: 1.15; }
+.specimen .dek { margin: 0 0 0.8rem; font-size: 1.15rem; font-style: italic; color: var(--dim); }
+
+.page-about h1, .page-elsewhere h1 {
+  margin: 0 0 1.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  letter-spacing: 0.06em;
+}
+
+.prose h2, .prose h3, .prose h4 { font-weight: 600; line-height: 1.3; margin: 2rem 0 0.5rem; }
+.prose p { margin: 0 0 1.15rem; }
+.prose blockquote {
+  margin: 1.5rem 0;
+  padding: 0 0 0 1.1rem;
+  border-left: 2px solid var(--moss);
+  font-style: italic;
+  color: var(--dim);
+}
+.prose code { font-family: var(--mono); font-size: 0.85em; }
+.prose hr { border: 0; text-align: center; margin: 2.5rem 0; }
+.prose hr::after { content: "· · ·"; color: var(--ochre); letter-spacing: 0.5em; }
+.prose ul, .prose ol { padding-left: 1.3rem; }
+
+.post + .subscribe { margin-top: 3rem; }
+
+.pager { display: flex; justify-content: space-between; gap: 1rem; margin: 0; }
+.pager a { color: var(--dim); text-decoration: none; }
+.pager a:hover { color: var(--ink); }
+.pager [rel="next"] { margin-left: auto; text-align: right; }
+
+.empty { text-align: center; padding: 2rem 0; }
+
+footer {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+  border-top: 1px solid var(--rule);
+  text-align: center;
+  color: var(--dim);
+}
+footer a { color: var(--dim); }

@@ -1,0 +1,21 @@
+name: build
+on:
+  push:
+    branches: [main]
+    paths: ["posts/**", "pages/**", "build.py", "style.css"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # publish times come from each post's first commit
+      - run: python3 build.py
+      - run: |
+          git config user.name "blogdrop"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git diff --cached --quiet || { git commit -m "build site"; git push; }
