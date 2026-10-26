@@ -1,6 +1,6 @@
 # birb-report
 
-Static site for birb.report — a personal site and blog (the plainer, longer writing; not foid, fringe, or intervals). GitHub Pages serves `docs/` on `main`; nothing is live until it lands on `main`. A GitHub Action rebuilds `docs/` on every push that touches `posts/`, `pages/`, `build.py`, or `style.css`.
+Static site for birb.report — a personal site and blog (keep the owner's name off the site) (the plainer, longer writing; not foid, fringe, or intervals). GitHub Pages serves `docs/` on `main`; nothing is live until it lands on `main`. A GitHub Action rebuilds `docs/` on every push that touches `posts/`, `pages/`, `build.py`, or `style.css`.
 
 ## How to publish a post (the ONLY workflow — do not improvise)
 

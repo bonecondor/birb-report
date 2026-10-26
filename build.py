@@ -43,7 +43,7 @@ PAGES_DIR = ROOT / "pages"
 STYLE_SRC = ROOT / "style.css"
 
 SITE_TITLE = "BIRB REPORT"
-TAGLINE = ""
+TAGLINE = ""  # line under the masthead; empty = no line
 DOMAIN = "birb.report"
 
 # Buttondown username (buttondown.com/<this>). Empty = the subscribe box
@@ -252,7 +252,7 @@ def page(title: str, body: str, depth: int = 0, current: str = "") -> str:
 <body>
 <header class="masthead">
 <a class="wordmark" href="{prefix}index.html">{html.escape(SITE_TITLE)}</a>
-<p class="tagline">{html.escape(TAGLINE)}</p>
+{f'<p class="tagline">{html.escape(TAGLINE)}</p>' if TAGLINE else ""}
 <nav>{nav}</nav>
 </header>
 <main>
@@ -359,14 +359,15 @@ def rss_feed(posts: list[dict]) -> str:
             f"<description>{html.escape(body)}</description>\n"
             "</item>"
         )
-    last_build = rfc822(posts[0]["when"]) if posts else rfc822(datetime.now(TZ))
+    # Fixed when empty, so rebuilds with no posts don't churn docs/.
+    last_build = rfc822(posts[0]["when"]) if posts else "Mon, 26 Oct 2026 00:00:00 -0400"
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
         "<channel>\n"
         f"<title>{html.escape(SITE_TITLE)}</title>\n"
         f"<link>https://{DOMAIN}/</link>\n"
-        f"<description>{html.escape(TAGLINE)}</description>\n"
+        f"<description>{html.escape(TAGLINE or SITE_TITLE)}</description>\n"
         f"<lastBuildDate>{last_build}</lastBuildDate>\n"
         f'<atom:link href="https://{DOMAIN}/feed.xml" rel="self" type="application/rss+xml"/>\n'
         + "\n".join(items)
