@@ -46,8 +46,7 @@ SITE_TITLE = "BIRB REPORT"
 TAGLINE = ""  # line under the masthead; empty = no line
 DOMAIN = "birb.report"
 
-# Buttondown username (buttondown.com/<this>). Empty = the subscribe box
-# shows "subscriptions opening soon" and points at the RSS feed instead.
+# Buttondown username (buttondown.com/<this>). Empty = no subscribe box.
 BUTTONDOWN = ""
 
 NAV = [("index.html", "entries"), ("about.html", "about"), ("elsewhere.html", "elsewhere")]
@@ -266,19 +265,18 @@ def page(title: str, body: str, depth: int = 0, current: str = "") -> str:
 """
 
 
-def subscribe_box(prefix: str = "") -> str:
-    if BUTTONDOWN:
-        form = (
-            f'<form class="subscribe-form" action="https://buttondown.com/api/emails/embed-subscribe/{BUTTONDOWN}" '
-            f'method="post" target="popupwindow" '
-            f"onsubmit=\"window.open('https://buttondown.com/{BUTTONDOWN}', 'popupwindow')\">"
-            '<label class="sr-only" for="bd-email">email address</label>'
-            '<input type="email" name="email" id="bd-email" placeholder="you@somewhere" required>'
-            '<button type="submit">subscribe</button>'
-            "</form>"
-        )
-    else:
-        form = f'<p class="subscribe-soon">subscriptions opening soon — <a href="{prefix}feed.xml">rss</a> works now.</p>'
+def subscribe_box() -> str:
+    if not BUTTONDOWN:
+        return ""
+    form = (
+        f'<form class="subscribe-form" action="https://buttondown.com/api/emails/embed-subscribe/{BUTTONDOWN}" '
+        f'method="post" target="popupwindow" '
+        f"onsubmit=\"window.open('https://buttondown.com/{BUTTONDOWN}', 'popupwindow')\">"
+        '<label class="sr-only" for="bd-email">email address</label>'
+        '<input type="email" name="email" id="bd-email" placeholder="you@somewhere" required>'
+        '<button type="submit">subscribe</button>'
+        "</form>"
+    )
     return (
         '<aside class="subscribe">\n'
         '<p class="label">sighting alerts</p>\n'
@@ -317,7 +315,7 @@ def post_article(post: dict, newer: dict | None, older: dict | None) -> str:
         "</header>\n"
         f'<div class="prose">\n{post["html"]}\n</div>\n'
         "</article>\n"
-        f"{subscribe_box('../')}\n"
+        f"{subscribe_box()}\n"
         f"{pager}"
     )
 
