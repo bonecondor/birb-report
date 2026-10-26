@@ -39,7 +39,7 @@ body {
 a { color: var(--moss); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { color: var(--ochre); }
 
-.label, .plate, .tagline, nav, footer, .subscribe-form, .pager {
+.label, .tagline, nav, footer, .subscribe-form, .pager {
   font-family: var(--mono);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
@@ -57,8 +57,6 @@ a:hover { color: var(--ochre); }
   text-align: center;
   border-bottom: 1px solid var(--rule);
 }
-
-.plate { margin: 0 0 0.75rem; color: var(--ochre); }
 
 .wordmark {
   display: block;

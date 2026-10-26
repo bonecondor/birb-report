@@ -251,7 +251,6 @@ def page(title: str, body: str, depth: int = 0, current: str = "") -> str:
 </head>
 <body>
 <header class="masthead">
-<p class="plate">vol. i · new york</p>
 <a class="wordmark" href="{prefix}index.html">{html.escape(SITE_TITLE)}</a>
 <p class="tagline">{html.escape(TAGLINE)}</p>
 <nav>{nav}</nav>
