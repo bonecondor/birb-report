@@ -12,6 +12,7 @@ How posting works:
         title: the post title
         dek: a one-line subtitle shown under the title
         preview: a short paragraph shown on the entries list (and link previews)
+        slug: on-taking-peptides   (publishes at birb.report/on-taking-peptides)
         ---
 
     A lone "# Title" first line works as the title too. No title at all is
@@ -182,6 +183,9 @@ def first_commit_time(path: Path) -> datetime | None:
     return datetime.fromisoformat(out[-1]).astimezone(TZ) if out else None
 
 
+_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+
+
 def parse_post(path: Path) -> dict | None:
     m = _DATE_IN_NAME.match(path.stem)
     if not m:
@@ -206,8 +210,14 @@ def parse_post(path: Path) -> dict | None:
         if when.date() != post_date:
             when = datetime.combine(post_date, time(12), TZ)
 
+    # `slug:` publishes the post at birb.report/<slug> (the date URL then redirects there).
+    slug = meta.get("slug", "").strip()
+    if slug and not _SLUG.fullmatch(slug):
+        sys.exit(f"{path.name}: slug must be lowercase letters, numbers and dashes: {slug!r}")
+
     return {
         "slug": path.stem,
+        "pretty": slug,
         "date": post_date,
         "time": stamp_time,
         "when": when,
@@ -291,16 +301,16 @@ def display_title(post: dict) -> str:
     return post["title"] or f"Entry {entry_no(post['no'])}"
 
 
-def post_article(post: dict, newer: dict | None, older: dict | None) -> str:
+def post_article(post: dict, newer: dict | None, older: dict | None, prefix: str) -> str:
     stamp = post["date"].strftime("%B %-d, %Y")
     if post.get("time"):
         stamp += f" · {post['time']}"
     dek = f'<p class="dek">{_inline(post["dek"])}</p>\n' if post["dek"] else ""
     links = []
     if older:
-        links.append(f'<a rel="prev" href="{older["slug"]}.html">← {html.escape(display_title(older))}</a>')
+        links.append(f'<a rel="prev" href="{prefix}{older["href"]}">← {html.escape(display_title(older))}</a>')
     if newer:
-        links.append(f'<a rel="next" href="{newer["slug"]}.html">{html.escape(display_title(newer))} →</a>')
+        links.append(f'<a rel="next" href="{prefix}{newer["href"]}">{html.escape(display_title(newer))} →</a>')
     pager = f'<nav class="pager">{"".join(links)}</nav>' if links else ""
     return (
         '<article class="post">\n'
@@ -327,7 +337,7 @@ def entries_list(posts: list[dict]) -> str:
         rows.append(
             '<li class="entry">\n'
             f'<p class="label"><span>no. {entry_no(p["no"])}</span> <span>{p["date"].strftime("%b %-d, %Y").lower()}</span></p>\n'
-            f'<h2><a href="posts/{p["slug"]}.html">{html.escape(display_title(p))}</a></h2>\n'
+            f'<h2><a href="{p["href"]}">{html.escape(display_title(p))}</a></h2>\n'
             f"{dek}{ex}\n"
             "</li>"
         )
@@ -343,7 +353,7 @@ def rss_feed(posts: list[dict]) -> str:
 
     items = []
     for p in posts:
-        link = f"https://{DOMAIN}/posts/{p['slug']}.html"
+        link = f"https://{DOMAIN}/{p['href']}"
         body = (f"<p><em>{_inline(p['dek'])}</em></p>\n" if p["dek"] else "") + p["html"]
         items.append(
             "<item>\n"
@@ -380,6 +390,21 @@ def build(include_drafts: bool = False) -> None:
         post["no"] = i
     posts.reverse()  # newest first for display
 
+    # Where each post lives. Slugged posts sit at the site root; GitHub Pages
+    # serves /<slug> from <slug>.html, so links drop the extension on the real
+    # site (the local preview server can't, so it keeps it).
+    reserved = {"index", "feed", "style", "posts", "CNAME"} | {s.stem for s in PAGES_DIR.glob("*.md")}
+    seen: set[str] = set()
+    for p in posts:
+        if p["pretty"]:
+            if p["pretty"] in reserved or p["pretty"] in seen:
+                sys.exit(f"slug {p['pretty']!r} is already taken by a page or another post")
+            seen.add(p["pretty"])
+            p["file"] = f"{p['pretty']}.html"
+            p["href"] = p["file"] if include_drafts else p["pretty"]
+        else:
+            p["file"] = p["href"] = f"posts/{p['slug']}.html"
+
     if site_dir.exists():
         shutil.rmtree(site_dir)
     (site_dir / "posts").mkdir(parents=True)
@@ -394,11 +419,20 @@ def build(include_drafts: bool = False) -> None:
     for i, p in enumerate(posts):
         newer = posts[i - 1] if i > 0 else None
         older = posts[i + 1] if i + 1 < len(posts) else None
-        (site_dir / "posts" / f"{p['slug']}.html").write_text(
-            page(f"{display_title(p)} — {SITE_TITLE}", post_article(p, newer, older), depth=1,
-                 description=p["preview"] or p["dek"]),
+        depth = p["file"].count("/")
+        (site_dir / p["file"]).write_text(
+            page(f"{display_title(p)} — {SITE_TITLE}", post_article(p, newer, older, "../" * depth),
+                 depth=depth, description=p["preview"] or p["dek"]),
             encoding="utf-8",
         )
+        if p["pretty"]:  # keep the old date URL working
+            target = f"https://{DOMAIN}/{p['pretty']}"
+            (site_dir / "posts" / f"{p['slug']}.html").write_text(
+                f'<!DOCTYPE html>\n<meta charset="utf-8">\n<link rel="canonical" href="{target}">\n'
+                f'<meta http-equiv="refresh" content="0; url=../{p["href"]}">\n'
+                f'<a href="../{p["href"]}">{html.escape(display_title(p))}</a>\n',
+                encoding="utf-8",
+            )
 
     for src in sorted(PAGES_DIR.glob("*.md")):
         meta, body = split_frontmatter(src.read_text(encoding="utf-8"))
