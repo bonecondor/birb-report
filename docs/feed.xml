@@ -4,16 +4,8 @@
 <title>BIRB REPORT</title>
 <link>https://birb.report/</link>
 <description>BIRB REPORT</description>
-<lastBuildDate>Tue, 27 Oct 2026 10:52:58 -0400</lastBuildDate>
+<lastBuildDate>Mon, 26 Oct 2026 00:00:00 -0400</lastBuildDate>
 <atom:link href="https://birb.report/feed.xml" rel="self" type="application/rss+xml"/>
-<item>
-<title>Test 00001</title>
-<link>https://birb.report/posts/2026-10-27.html</link>
-<guid isPermaLink="true">https://birb.report/posts/2026-10-27.html</guid>
-<pubDate>Tue, 27 Oct 2026 10:52:58 -0400</pubDate>
-<description>&lt;p&gt;&lt;em&gt;a subtitle in my test&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;This is a test!&lt;/p&gt;
-&lt;p&gt;I notice I cannot link anything anywhere!&lt;/p&gt;</description>
-</item>
+
 </channel>
 </rss>

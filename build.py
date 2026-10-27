@@ -258,7 +258,7 @@ def page(title: str, body: str, depth: int = 0, current: str = "") -> str:
 {body}
 </main>
 <footer>
-<p><a href="{prefix}feed.xml">rss</a> · <a href="https://foid.report">foid</a> · <a href="https://fringe.report">fringe</a> · <a href="https://intervals.report">intervals</a> · <a href="https://trysoup.xyz">soup</a></p>
+<p><a href="{prefix}feed.xml">rss</a> · <a href="https://foid.report">foid</a> · <a href="https://fringe.report">fringe</a> · <a href="https://trysoup.xyz">soup</a></p>
 </footer>
 </body>
 </html>
