@@ -11,6 +11,7 @@ How posting works:
         ---
         title: the post title
         dek: a one-line subtitle shown under the title
+        preview: a short paragraph shown on the entries list (and link previews)
         ---
 
     A lone "# Title" first line works as the title too. No title at all is
@@ -213,24 +214,20 @@ def parse_post(path: Path) -> dict | None:
         "title": title,
         "dek": meta.get("dek", ""),
         "html": md_to_html(body),
-        "excerpt": excerpt(body),
+        "preview": meta.get("preview", ""),  # no preview = title only on the list
     }
-
-
-def excerpt(body: str, limit: int = 220) -> str:
-    """First paragraph as plain text, trimmed — for the entries list."""
-    para = re.split(r"\n\s*\n", body.strip(), maxsplit=1)[0] if body.strip() else ""
-    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", para)
-    text = re.sub(r"[*_`>#]", "", text).replace("\n", " ").strip()
-    if len(text) > limit:
-        text = text[:limit].rsplit(" ", 1)[0] + "…"
-    return text
 
 
 # ------------------------------ pages -------------------------------------- #
 
-def page(title: str, body: str, depth: int = 0, current: str = "") -> str:
+def page(title: str, body: str, depth: int = 0, current: str = "", description: str = "") -> str:
     prefix = "../" * depth
+    desc = ""
+    if description:
+        d = html.escape(re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", description))
+        desc = (f'<meta name="description" content="{d}">\n'
+                f'<meta property="og:title" content="{html.escape(title)}">\n'
+                f'<meta property="og:description" content="{d}">\n')
     here = ' aria-current="page"'
     nav = " ".join(
         f'<a href="{prefix}{href}"{here if href == current else ""}>{label}</a>'
@@ -242,7 +239,7 @@ def page(title: str, body: str, depth: int = 0, current: str = "") -> str:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(title)}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+{desc}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap">
 <link rel="stylesheet" href="{prefix}style.css">
@@ -326,7 +323,7 @@ def entries_list(posts: list[dict]) -> str:
     rows = []
     for p in posts:
         dek = f'<p class="dek">{_inline(p["dek"])}</p>' if p["dek"] else ""
-        ex = f'<p class="excerpt">{html.escape(p["excerpt"])}</p>' if p["excerpt"] else ""
+        ex = f'<p class="excerpt">{_inline(p["preview"])}</p>' if p["preview"] else ""
         rows.append(
             '<li class="entry">\n'
             f'<p class="label"><span>no. {entry_no(p["no"])}</span> <span>{p["date"].strftime("%b %-d, %Y").lower()}</span></p>\n'
@@ -398,7 +395,8 @@ def build(include_drafts: bool = False) -> None:
         newer = posts[i - 1] if i > 0 else None
         older = posts[i + 1] if i + 1 < len(posts) else None
         (site_dir / "posts" / f"{p['slug']}.html").write_text(
-            page(f"{display_title(p)} — {SITE_TITLE}", post_article(p, newer, older), depth=1),
+            page(f"{display_title(p)} — {SITE_TITLE}", post_article(p, newer, older), depth=1,
+                 description=p["preview"] or p["dek"]),
             encoding="utf-8",
         )
 

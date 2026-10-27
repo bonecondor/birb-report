@@ -5,7 +5,7 @@ Static site for birb.report — a personal site and blog (keep the owner's name 
 ## How to publish a post (the ONLY workflow — do not improvise)
 
 1. Save the text VERBATIM to `posts/YYYY-MM-DD.md` (second post same day: `posts/YYYY-MM-DD-two.md`). Never rewrite, fix, or restyle the prose. Only add links the user explicitly asks for.
-2. Optional frontmatter — `title:` and `dek:` (one-line subtitle). Add them only if the user gives them. A first line `# Title` also works.
+2. Optional frontmatter — `title:`, `dek:` (one-line subtitle), and `preview:` (short paragraph for the entries list and link previews; without it the list shows the title only). Add them only if the user gives them — never write a preview yourself. A first line `# Title` also works.
 3. `python3 build.py` → confirm "built N post(s)".
 4. Commit the post and `docs/` together, message `post: YYYY-MM-DD`, push to `main`. No PRs.
 
